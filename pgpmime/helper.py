@@ -1,10 +1,27 @@
 # Copyright (C) 2011-2012  Patrick Totzke <patricktotzke@gmail.com>
+# Copyright (C) 2015       Ian Denhardt <ian@zenhack.net>
 # This file is released under the GNU GPL, version 3 or a later revision.
 # For further details see the COPYING file
 import re
 from cStringIO import StringIO
 from email.generator import Generator
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+def normalize_payload(payload):
+    """
+    compiles the information contained in this envelope into a
+    :class:`email.Message`.
+    """
+    # Build body text part. To properly sign/encrypt messages later on, we
+    # convert the text to its canonical format (as per RFC 2015).
+    if isinstance(payload, basestring):
+        payload = payload.encode('utf-8')
+        payload = payload.replace('\\t', ' ' * 4)
+        payload = MIMEText(payload, 'plain', 'utf-8')
+
+    return payload
 
 
 def RFC3156_canonicalize(text):
