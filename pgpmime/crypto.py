@@ -9,37 +9,6 @@ from pgpmime.errors import GPGProblem, GPGCode
 import gpgme
 
 
-def _hash_algo_name(hash_algo):
-    """
-    Re-implements GPGME's hash_algo_name as long as pygpgme doesn't wrap that
-    function.
-
-    :param hash_algo: GPGME hash_algo
-    :rtype: str
-    """
-    mapping = {
-        gpgme.MD_MD5: "MD5",
-        gpgme.MD_SHA1: "SHA1",
-        gpgme.MD_RMD160: "RIPEMD160",
-        gpgme.MD_MD2: "MD2",
-        gpgme.MD_TIGER: "TIGER192",
-        gpgme.MD_HAVAL: "HAVAL",
-        gpgme.MD_SHA256: "SHA256",
-        gpgme.MD_SHA384: "SHA384",
-        gpgme.MD_SHA512: "SHA512",
-        gpgme.MD_MD4: "MD4",
-        gpgme.MD_CRC32: "CRC32",
-        gpgme.MD_CRC32_RFC1510: "CRC32RFC1510",
-        gpgme.MD_CRC24_RFC2440: "CRC24RFC2440",
-    }
-    if hash_algo in mapping:
-        return mapping[hash_algo]
-    else:
-        raise GPGProblem(("Invalid hash_algo passed to hash_algo_name."
-                          " Please report this as a bug in alot."),
-                         code=GPGCode.INVALID_HASH)
-
-
 def RFC3156_micalg_from_algo(hash_algo):
     """
     Converts a GPGME hash algorithm name to one conforming to RFC3156.
@@ -50,9 +19,27 @@ def RFC3156_micalg_from_algo(hash_algo):
     :param hash_algo: GPGME hash_algo
     :rtype: str
     """
-    # hash_algo will be something like SHA256, but we need pgp-sha256.
-    hash_algo = _hash_algo_name(hash_algo)
-    return 'pgp-' + hash_algo.lower()
+    mapping = {
+        1:   'pgp-md5',
+        2:   'pgp-sha1',
+        3:   'pgp-ripemd160',
+        5:   'pgp-md2',
+        6:   'pgp-tiger192',
+        7:   'pgp-haval',
+        8:   'pgp-sha256',
+        9:   'pgp-sha384',
+        10:  'pgp-sha512',
+        301: 'pgp-md4',
+        302: 'pgp-crc32',
+        303: 'pgp-crc32rfc1510',
+        304: 'pgp-crc24rfc2440',
+    }
+    if hash_algo in mapping:
+        return mapping[hash_algo]
+    else:
+        raise GPGProblem(("Invalid hash_algo passed to hash_algo_name."
+                          " Please report this as a bug in alot."),
+                         code=GPGCode.INVALID_HASH)
 
 
 def get_key(keyid, validate=False, encrypt=False, sign=False):
