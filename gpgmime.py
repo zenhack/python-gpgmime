@@ -28,16 +28,44 @@ def _copy_headers(src, dest):
                 dest[key] = src[key]
 
 
+def _infer_recipients(msg):
+    """Infer the proper recipients based on msg's headers.
+
+    return a list of recipients including all addresses listed in the
+    To, Cc, and Bcc headers.
+    """
+    recipients = []
+    for hdr in 'To', 'Cc', 'Bcc':
+        for addr in msg[hdr].split(','):
+            addr = addr.strip()
+            recipients.append(addr)
+    return addr
+
+
 class GPG(gnupg.GPG):
 
     def sign_email(self, msg, keyid=None, passphrase=None):
+        """MIME-sign a message.
+
+        keyid and passphrase are the same as the parameters for the
+        superclass's sign method.
+        """
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
                                      passphrase=passphrase)
         _copy_headers(msg, payload)
         return payload
 
-    def encrypt_email(self, msg, recipients):
+    def encrypt_email(self, msg, recipients=None):
+        """MIME-encrypt a message.
+
+        :param msg: The message to encrypt (an instance of
+            :class:`email.message.Message`).
+        :param recipients: A list of recipients to encrypt to. If None or
+            unspecified, infered from the To, Cc, and Bcc headers.
+        """
+        if recipients is None:
+            recipients = _infer_recipients(msg)
         payload = self._encrypt_payload(msg.get_payload(),
                                         recipients=recipients)
         _copy_headers(msg, payload)
@@ -45,9 +73,15 @@ class GPG(gnupg.GPG):
 
     def sign_and_encrypt_email(self,
                                msg,
-                               recipients,
+                               recipients=None,
                                keyid=None,
                                passphrase=None):
+        """MIME-sign and encrypt the message.
+
+        The parameters are the same as with encrypt_email and sign_email.
+        """
+        if recipients is None:
+            recipients = _infer_recipients(msg)
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
                                      passphrase=passphrase)
