@@ -1,5 +1,5 @@
 
-from pgpmime.envelope import *
+import gpgmime
 import email
 
 msg = '''To: Alice <alice@example.com>
@@ -15,6 +15,8 @@ Isn't that cool?
 '''.replace('\n', '\r\n')
 
 msg = email.message_from_string(msg)
-msg = sign(msg)
+gpg = gpgmime.GPG()
+
+msg = gpg.sign_email(msg)
 
 print(msg.as_string())

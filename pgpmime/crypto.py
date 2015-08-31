@@ -20,19 +20,19 @@ def RFC3156_micalg_from_algo(hash_algo):
     :rtype: str
     """
     mapping = {
-        1:   'pgp-md5',
-        2:   'pgp-sha1',
-        3:   'pgp-ripemd160',
-        5:   'pgp-md2',
-        6:   'pgp-tiger192',
-        7:   'pgp-haval',
-        8:   'pgp-sha256',
-        9:   'pgp-sha384',
-        10:  'pgp-sha512',
-        301: 'pgp-md4',
-        302: 'pgp-crc32',
-        303: 'pgp-crc32rfc1510',
-        304: 'pgp-crc24rfc2440',
+        '1':   'pgp-md5',
+        '2':   'pgp-sha1',
+        '3':   'pgp-ripemd160',
+        '5':   'pgp-md2',
+        '6':   'pgp-tiger192',
+        '7':   'pgp-haval',
+        '8':   'pgp-sha256',
+        '9':   'pgp-sha384',
+        '10':  'pgp-sha512',
+        '301': 'pgp-md4',
+        '302': 'pgp-crc32',
+        '303': 'pgp-crc32rfc1510',
+        '304': 'pgp-crc24rfc2440',
     }
     if hash_algo in mapping:
         return mapping[hash_algo]

@@ -3,7 +3,7 @@ from setuptools import setup
 setup(name='pgpmime',
       version='0.1',
       packages=['pgpmime'],
-      install_requires=['pygpgme'],
+      install_requires=['python-gnupg'],
       author='Ian Denhardt',
       author_email='ian@zenhack.net',
       description='Library for manipulating PGP-Mime email.',
