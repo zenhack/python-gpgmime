@@ -16,6 +16,14 @@ import gpgme
 from .errors import GPGProblem, GPGCode
 
 
+def sign(msg, key=None):
+    payload = sign_payload(msg.get_payload(), key)
+    for key in msg.keys():
+        if key not in payload:
+            payload[key] = msg[key]
+    return payload
+
+
 def sign_payload(payload, key=None):
     payload = helper.normalize_payload(payload)
     plaintext = helper.email_as_string(payload)
