@@ -62,3 +62,31 @@ class GPG(gnupg.GPG):
         unencrypted_msg['Content-Disposition'] = 'inline'
 
         return unencrypted_msg
+
+    def _encrypt_payload(self, unencrypted_msg, recipients):
+
+        plaintext = helper.email_as_string(unencrypted_msg)
+        logging.debug('encrypting plaintext: ' + plaintext)
+
+        ciphertext = self.encrypt(plaintext, recipients)
+        if not ciphertext:
+            raise GPGProblem(ciphertext.stderr,
+                             code=GPGCode.KEY_CANNOT_ENCRYPT)
+
+        outer_msg = MIMEMultipart('encrypted',
+                                  protocol='application/pgp-encrypted')
+
+        version_str = 'Version: 1'
+        encryption_mime = MIMEApplication(_data=version_str,
+                                          _subtype='pgp-encrypted',
+                                          _encoder=encode_7or8bit)
+        encryption_mime.set_charset('us-ascii')
+
+        encrypted_mime = MIMEApplication(_data=str(ciphertext),
+                                         _subtype='octet-stream',
+                                         _encoder=encode_7or8bit)
+        encrypted_mime.set_charset('us-ascii')
+        outer_msg.attach(encryption_mime)
+        outer_msg.attach(encrypted_mime)
+
+        return outer_msg
