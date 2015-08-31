@@ -11,6 +11,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
 
+def _(s):
+    """Placeholder for gettext; we may internationalize this library later."""
+    return s
+
+
 class GPG(gnupg.GPG):
 
     def sign_email(self, msg, keyid=None, passphrase=None):
@@ -32,8 +37,8 @@ class GPG(gnupg.GPG):
                               keyid=keyid,
                               passphrase=passphrase)
         if not signature:
-            raise GPGProblem("Could not sign message (GnuPG "
-                             "did not return a signature)",
+            raise GPGProblem(_("Could not sign message (GnuPG "
+                               "did not return a signature)"),
                              code=GPGCode.KEY_CANNOT_SIGN)
 
         micalg = crypto.RFC3156_micalg_from_algo(signature.hash_algo)
