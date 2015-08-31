@@ -43,6 +43,19 @@ class GPG(gnupg.GPG):
         _copy_headers(msg, payload)
         return payload
 
+    def sign_and_encrypt_email(self,
+                               msg,
+                               recipients,
+                               keyid=None,
+                               passphrase=None):
+        payload = self._sign_payload(msg.get_payload(),
+                                     keyid=keyid,
+                                     passphrase=passphrase)
+        payload = self._encrypt_payload(payload,
+                                        recipients=recipients)
+        _copy_headers(msg, payload)
+        return payload
+
     def _sign_payload(self, payload, keyid=None, passphrase=None):
         payload = helper.normalize_payload(payload)
         plaintext = helper.email_as_string(payload)
