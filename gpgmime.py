@@ -16,15 +16,31 @@ def _(s):
     return s
 
 
+def _copy_headers(src, dest):
+        """Add all headers from src to dest, except those already present.
+
+        Both src and dest should be instances of class:`email.message.Message`.
+        dest will be modified in place, adding all of the headers in src which
+        are not already present.
+        """
+        for key in src.keys():
+            if key not in dest:
+                dest[key] = src[key]
+
+
 class GPG(gnupg.GPG):
 
     def sign_email(self, msg, keyid=None, passphrase=None):
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
                                      passphrase=passphrase)
-        for key in msg.keys():
-            if key not in payload:
-                payload[key] = msg[key]
+        _copy_headers(msg, payload)
+        return payload
+
+    def encrypt_email(self, msg, recipients):
+        payload = self._encrypt_payload(msg.get_payload(),
+                                        recipients=recipients)
+        _copy_headers(msg, payload)
         return payload
 
     def _sign_payload(self, payload, keyid=None, passphrase=None):

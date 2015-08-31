@@ -18,5 +18,8 @@ msg = email.message_from_string(msg)
 gpg = gpgmime.GPG()
 
 msg = gpg.sign_email(msg)
+# Encrypting an already signed message isn't working yet, but we eventually
+# want to be able to do this:
+# msg = gpg.encrypt_email(msg, 'alice@example.com')
 
 print(msg.as_string())
