@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='pgpmime',
+setup(name='gpgmime',
       version='0.1',
       packages=['pgpmime'],
       modules=['gpgmime'],
