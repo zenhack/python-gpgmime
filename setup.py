@@ -2,8 +2,7 @@ from setuptools import setup
 
 setup(name='gpgmime',
       version='0.1',
-      packages=['pgpmime'],
-      modules=['gpgmime'],
+      packages=['gpgmime'],
       install_requires=['python-gnupg'],
       author='Ian Denhardt',
       author_email='ian@zenhack.net',

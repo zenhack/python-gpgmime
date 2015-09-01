@@ -1,8 +1,8 @@
 
 import logging
 import gnupg
-from pgpmime import helper, crypto
-from pgpmime.errors import GPGCode, GPGProblem
+from . import helper, crypto
+from .errors import GPGCode, GPGProblem
 
 import email.charset as charset
 charset.add_charset('utf-8', charset.QP, charset.QP, 'utf-8')

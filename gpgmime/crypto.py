@@ -5,7 +5,7 @@
 import os
 
 from cStringIO import StringIO
-from pgpmime.errors import GPGProblem, GPGCode
+from .errors import GPGProblem, GPGCode
 import gpgme
 
 
