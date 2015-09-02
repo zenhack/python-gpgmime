@@ -111,7 +111,7 @@ class GPG(gnupg.GPG):
                                "did not return a signature)"),
                              code=GPGCode.KEY_CANNOT_SIGN)
 
-        micalg = crypto.RFC3156_micalg_from_algo(signature.hash_algo)
+        micalg = helper.RFC3156_micalg_from_algo(signature.hash_algo)
         unencrypted_msg = MIMEMultipart(
             'signed',
             micalg=micalg,
