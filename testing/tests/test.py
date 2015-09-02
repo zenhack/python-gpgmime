@@ -17,7 +17,7 @@ def msg():
         "",
         "Isn't that cool?",
         "",
-        "-Bob",
+        "-Alice",
         "",
     ]))
 
