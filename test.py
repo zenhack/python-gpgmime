@@ -1,9 +1,10 @@
 
 import gpgmime
 import email
+from os.path import join, dirname
 
-msg = '''To: Alice <alice@example.com>
-From: Bob <bob@example.org>
+msg = '''To: Robert <bob@example.org>
+From: Alice <alice@example.com>
 Date: Sun, 30 Aug 2015 20:00:03 -0400
 Subject: hello
 
@@ -15,9 +16,14 @@ Isn't that cool?
 '''.replace('\n', '\r\n')
 
 msg = email.message_from_string(msg)
-gpg = gpgmime.GPG()
+gpg = gpgmime.GPG(gnupghome=join(dirname(__file__), 'testing/gpghome'),
+                  use_agent=False)
 
-msg = gpg.sign_and_encrypt_email(msg, recipients='alice@example.com')
+msg = gpg.sign_and_encrypt_email(msg,
+                                 keyid='alice@example.com',
+                                 passphrase='secret',
+                                 recipients='bob@example.org',
+                                 )
 # Encrypting an already signed message isn't working yet, but we eventually
 # want to be able to do this:
 # msg = gpg.encrypt_email(gpg.sign_email(msg), 'alice@example.com')
