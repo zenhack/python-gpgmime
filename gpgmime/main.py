@@ -9,6 +9,7 @@ charset.add_charset('utf-8', charset.QP, charset.QP, 'utf-8')
 from email.encoders import encode_7or8bit
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+from email.message import Message
 
 
 def _(s):
@@ -64,10 +65,16 @@ class GPG(gnupg.GPG):
         :param recipients: A list of recipients to encrypt to. If None or
             unspecified, infered from the To, Cc, and Bcc headers.
         """
+        if 'MIME-Version' in msg:
+            body = Message()
+            body.set_payload(msg.get_payload())
+            body['MIME-Version'] = msg['MIME-Version']
+            body['Content-Type'] = msg['Content-Type']
+        else:
+            body = msg.get_payload()
         if recipients is None:
             recipients = _infer_recipients(msg)
-        payload = self._encrypt_payload(msg.get_payload(),
-                                        recipients=recipients)
+        payload = self._encrypt_payload(body, recipients=recipients)
         _copy_headers(msg, payload)
         return payload
 

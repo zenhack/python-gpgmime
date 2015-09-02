@@ -38,7 +38,6 @@ def test_sign_encrypt_onestep(gpg, msg):
                                      recipients='bob@example.org')
 
 
-@pytest.mark.xfail()
 def test_sign_then_encrypt(gpg, msg):
     msg = gpg.encrypt_email(gpg.sign_email(msg,
                                            keyid='alice@example.com',
