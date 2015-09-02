@@ -18,15 +18,15 @@ def _(s):
 
 
 def _copy_headers(src, dest):
-        """Add all headers from src to dest, except those already present.
+    """Add all headers from src to dest, except those already present.
 
-        Both src and dest should be instances of class:`email.message.Message`.
-        dest will be modified in place, adding all of the headers in src which
-        are not already present.
-        """
-        for key in src.keys():
-            if key not in dest:
-                dest[key] = src[key]
+    Both src and dest should be instances of class:`email.message.Message`.
+    dest will be modified in place, adding all of the headers in src which
+    are not already present.
+    """
+    for key in src.keys():
+        if key not in dest:
+            dest[key] = src[key]
 
 
 def _infer_recipients(msg):
