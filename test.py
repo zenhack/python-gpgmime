@@ -13,7 +13,7 @@ This message is signed!
 Isn't that cool?
 
 -Bob
-'''.replace('\n', '\r\n')
+'''
 
 msg = email.message_from_string(msg)
 gpg = gpgmime.GPG(gnupghome=join(dirname(__file__), 'testing/gpghome'),
