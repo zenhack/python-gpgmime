@@ -11,9 +11,10 @@ from .errors import GPGProblem, GPGCode
 
 
 def normalize_payload(payload):
-    """
-    compiles the information contained in this envelope into a
-    :class:`email.Message`.
+    """Normalize the format of the payload.
+
+    If payload is a string, convert it to MIMEText and return it.
+    Otherwise, leave it alone.
     """
     # Build body text part. To properly sign/encrypt messages later on, we
     # convert the text to its canonical format (as per RFC 2015).
@@ -77,13 +78,13 @@ def email_as_string(mail):
 
 
 def RFC3156_micalg_from_algo(hash_algo):
-    """
-    Converts a GPGME hash algorithm name to one conforming to RFC3156.
+    """Convert hash_algo returned by python-gnupg to what RFC3156 requires.
 
-    GPGME returns hash algorithm names such as "SHA256", but RFC3156 says that
-    programs need to use names such as "pgp-sha256" instead.
+    GPG (and by extension python-gnupg) returns hash algorithms as numbers
+    (encoded as strings), but RFC3156 says that programs need to use names
+    such as "pgp-sha256" instead.
 
-    :param hash_algo: GPGME hash_algo
+    :param hash_algo: python-gnupg hash_algo
     :rtype: str
     """
     mapping = {
@@ -104,6 +105,5 @@ def RFC3156_micalg_from_algo(hash_algo):
     if hash_algo in mapping:
         return mapping[hash_algo]
     else:
-        raise GPGProblem(("Invalid hash_algo passed to hash_algo_name."
-                          " Please report this as a bug in alot."),
+        raise GPGProblem(("Invalid hash_algo passed to hash_algo_name."),
                          code=GPGCode.INVALID_HASH)
