@@ -2,12 +2,16 @@
 import pytest
 import gpgmime
 import email
+import logging
 from os.path import join, dirname
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 @pytest.fixture()
 def msg():
-    return email.message_from_string('\r\n'.join([
+    result = email.message_from_string('\r\n'.join([
         "To: Robert <bob@example.org>",
         "From: Alice <alice@example.com>",
         "Date: Sun, 30 Aug 2015 20:00:03 -0400",
@@ -20,6 +24,8 @@ def msg():
         "-Alice",
         "",
     ]))
+    logger.debug("Using message: %r", result.as_string())
+    return result
 
 
 @pytest.fixture()
@@ -36,6 +42,7 @@ def test_sign_encrypt_onestep(gpg, msg):
                                      keyid='alice@example.com',
                                      passphrase='secret',
                                      recipients='bob@example.org')
+    logger.debug("one-step output: %r", msg.as_string())
 
 
 def test_sign_then_encrypt(gpg, msg):
@@ -43,3 +50,4 @@ def test_sign_then_encrypt(gpg, msg):
                                            keyid='alice@example.com',
                                            passphrase='secret'),
                             recipients='bob@example.org')
+    logger.debug("two-step output: %r", msg.as_string())
