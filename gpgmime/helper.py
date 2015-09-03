@@ -7,6 +7,7 @@ from cStringIO import StringIO
 from email.generator import Generator
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.message import Message
 from .errors import GPGProblem, GPGCode
 
 
@@ -119,6 +120,32 @@ def copy_headers(src, dest):
     for key in src.keys():
         if key not in dest:
             dest[key] = src[key]
+
+
+def clone_payload(src):
+    """Return a copy of the payload.
+
+    :param src: The email payload to copy
+    """
+    if isinstance(src, basestring):
+        return src
+    else:
+        return [clone_message(m) for m in src]
+
+
+def clone_message(src):
+    """Return a copy of the message.
+
+    :param src: The message to copy
+    """
+    dest = Message()
+    copy_headers(src, dest)
+    payload = src.get_payload()
+    if not isinstance(payload, basestring):
+        payload = clone_payload(payload)
+    dest.set_payload(payload)
+    return dest
+
 
 
 def infer_recipients(msg):
