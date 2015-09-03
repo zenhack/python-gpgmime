@@ -1,7 +1,7 @@
 
 import logging
 import gnupg
-from . import helper, crypto
+from . import helper
 from .errors import GPGCode, GPGProblem
 
 import email.charset as charset
