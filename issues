@@ -1,0 +1,5 @@
+TODO:
+
+* Docstrings currently claim that everything returns a copy of the message,
+  without modifying the original. This may not actually be true currently; we
+  should go through and verify that it's doing the right thing.
