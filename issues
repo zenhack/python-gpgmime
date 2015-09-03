@@ -3,3 +3,6 @@ TODO:
 * Docstrings currently claim that everything returns a copy of the message,
   without modifying the original. This may not actually be true currently; we
   should go through and verify that it's doing the right thing.
+* Ought to be able to query whether a message is encrypted/signed.
+* Need to implement decryption/verification
+* Need to get sphinx docs in order
