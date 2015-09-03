@@ -147,7 +147,6 @@ def clone_message(src):
     return dest
 
 
-
 def infer_recipients(msg):
     """Infer the proper recipients based on msg's headers.
 
@@ -160,3 +159,18 @@ def infer_recipients(msg):
             addr = addr.strip()
             recipients.append(addr)
     return addr
+
+
+def get_params(mail, failobj=list(), header='content-type', unquote=True):
+    '''Get Content-Type parameters as dict.
+
+    RFC 2045 specifies that parameter names are case-insensitive, so
+    we normalize them here.
+
+    :param mail: :class:`email.message.Message`
+    :param failobj: object to return if no such header is found
+    :param header: the header to search for parameters, default
+    :param unquote: unquote the values
+    :returns: a `dict` containing the parameters
+    '''
+    return {k.lower(): v for k, v in mail.get_params(failobj, header, unquote)}

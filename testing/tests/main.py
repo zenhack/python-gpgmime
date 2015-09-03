@@ -1,6 +1,7 @@
 
 import pytest
 import logging
+import gpgmime
 
 # These are pytest fixtures; while we don't use them explicitly in the module
 # below, they're used implicitly due to the parameter names of the tests. This
@@ -13,10 +14,11 @@ logger = logging.getLogger(__name__)
 
 
 class TestSignAndEncrypt:
-    """Each of these tests verifies two things:
+    """Each of these tests verifies a few things:
 
     1. The operation in question doesn't blow up.
     2. The operation doesn't modify the original message.
+    3. The result is consistent with is_signed and is_encrypted.
     """
 
     def test_sign_encrypt_onestep(self, gpg, msg):
@@ -25,6 +27,11 @@ class TestSignAndEncrypt:
                                          keyid='alice@example.com',
                                          passphrase='secret',
                                          recipients='bob@example.org')
+
+        assert gpgmime.is_encrypted(ret)
+        assert not gpgmime.is_signed(ret)  # Per is_signed's docstring, there
+                                           # is no way to tell if the message
+                                           # is also encrypted.
         assert msg.as_string() == msg_text
         logger.debug("one-step output: %r", ret.as_string())
 
@@ -34,11 +41,14 @@ class TestSignAndEncrypt:
         signed = gpg.sign_email(msg,
                                 keyid='alice@example.com',
                                 passphrase='secret')
+        assert gpgmime.is_signed(signed)
 
         assert msg.as_string() == msg_text
         signed_text = signed.as_string()
 
         encrypted = gpg.encrypt_email(signed, recipients='bob@example.org')
+        assert gpgmime.is_encrypted(encrypted)
+        assert not gpgmime.is_signed(encrypted)
 
         assert signed.as_string() == signed_text
 

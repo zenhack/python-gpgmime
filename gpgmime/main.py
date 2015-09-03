@@ -11,10 +11,35 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.message import Message
 
+app_pgp_sig = 'application/pgp-signature'
+app_pgp_enc = 'application/pgp-encrypted'
+
 
 def _(s):
     """Placeholder for gettext; we may internationalize this library later."""
     return s
+
+
+def is_encrypted(msg):
+    """Return whether the message is encrypted."""
+    p = helper.get_params(msg)
+    return (msg.is_multipart() and
+            msg.get_content_subtype() == 'encrypted' and
+            p.get('protocol', None) == app_pgp_enc and
+            'Version: 1' in msg.get_payload(0).get_payload())
+
+
+def is_signed(msg):
+    """Return whether the message is signed.
+
+    NOTE WELL: if the message is encrypted, there is no way to determine
+    whether the message is signed without decrypting it. As such,
+    this functionwill always return False if msg is encrypted.
+    """
+    p = helper.get_params(msg)
+    return (msg.is_multipart() and
+            msg.get_content_subtype() == 'signed' and
+            p.get('protocol', None) == app_pgp_sig)
 
 
 class GPG(gnupg.GPG):

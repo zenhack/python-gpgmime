@@ -1,1 +1,1 @@
-from .main import GPG
+from .main import *
