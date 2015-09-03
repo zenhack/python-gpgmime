@@ -60,6 +60,8 @@ def test_encrypt_decrypt(gpg, msg):
     orig_text = msg.as_string()
 
     msg = gpg.encrypt_email(msg, recipients='bob@example.org')
+    assert helper.is_signed(msg)
+
     msg, decrypted = gpg.decrypt_email(msg)
     assert decrypted
 
@@ -71,6 +73,7 @@ def test_sign_verify(gpg, msg):
     orig_text = msg.as_string()
 
     ret = gpg.sign_email(msg, keyid='alice@example.com', passphrase='secret')
+    assert helper.is_signed(ret)
     ret, verified = gpg.verify_email(msg)
     assert verified
 
