@@ -12,34 +12,56 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-# So far, the two tests below just verify that things don't throw exceptions.
-# We should add more extensive tests in the future.
+class TestSignAndEncrypt:
+    """Each of these tests verifies two things:
 
-def test_sign_encrypt_onestep(gpg, msg):
-    msg = gpg.sign_and_encrypt_email(msg,
-                                     keyid='alice@example.com',
-                                     passphrase='secret',
-                                     recipients='bob@example.org')
-    logger.debug("one-step output: %r", msg.as_string())
+    1. The operation in question doesn't blow up.
+    2. The operation doesn't modify the original message.
+    """
 
+    def test_sign_encrypt_onestep(self, gpg, msg):
+        msg_text = msg.as_string()
+        ret = gpg.sign_and_encrypt_email(msg,
+                                         keyid='alice@example.com',
+                                         passphrase='secret',
+                                         recipients='bob@example.org')
+        assert msg.as_string() == msg_text
+        logger.debug("one-step output: %r", ret.as_string())
 
-def test_sign_then_encrypt(gpg, msg):
-    msg = gpg.encrypt_email(gpg.sign_email(msg,
-                                           keyid='alice@example.com',
-                                           passphrase='secret'),
-                            recipients='bob@example.org')
-    logger.debug("two-step output: %r", msg.as_string())
+    def test_sign_then_encrypt(self, gpg, msg):
+        msg_text = msg.as_string()
+
+        signed = gpg.sign_email(msg,
+                                keyid='alice@example.com',
+                                passphrase='secret')
+
+        assert msg.as_string() == msg_text
+        signed_text = signed.as_string()
+
+        encrypted = gpg.encrypt_email(signed, recipients='bob@example.org')
+
+        assert signed.as_string() == signed_text
+
+        logger.debug("two-step output: %r", encrypted.as_string())
 
 
 @pytest.mark.xfail()
 def test_encrypt_decrypt(gpg, msg):
+    orig_text = msg.as_string()
+
     msg = gpg.encrypt_email(msg, recipients='bob@example.org')
     msg, decrypted = gpg.decrypt_email(msg)
     assert decrypted
 
+    assert msg.as_string() == orig_text
+
 
 @pytest.mark.xfail()
 def test_sign_verify(gpg, msg):
-    msg = gpg.sign_email(msg, keyid='alice@example.com', passphrase='secret')
-    msg, verified = gpg.verify_email(msg)
+    orig_text = msg.as_string()
+
+    ret = gpg.sign_email(msg, keyid='alice@example.com', passphrase='secret')
+    ret, verified = gpg.verify_email(msg)
     assert verified
+
+    assert msg.as_string() == orig_text
