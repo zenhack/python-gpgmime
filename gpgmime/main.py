@@ -17,32 +17,6 @@ def _(s):
     return s
 
 
-def _copy_headers(src, dest):
-    """Add all headers from src to dest, except those already present.
-
-    Both src and dest should be instances of class:`email.message.Message`.
-    dest will be modified in place, adding all of the headers in src which
-    are not already present.
-    """
-    for key in src.keys():
-        if key not in dest:
-            dest[key] = src[key]
-
-
-def _infer_recipients(msg):
-    """Infer the proper recipients based on msg's headers.
-
-    return a list of recipients including all addresses listed in the
-    To, Cc, and Bcc headers.
-    """
-    recipients = []
-    for hdr in 'To', 'Cc', 'Bcc':
-        for addr in msg[hdr].split(','):
-            addr = addr.strip()
-            recipients.append(addr)
-    return addr
-
-
 class GPG(gnupg.GPG):
     """An extended :class:`gnupg.GPG` with support for PGP MIME.
 
@@ -61,7 +35,7 @@ class GPG(gnupg.GPG):
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
                                      passphrase=passphrase)
-        _copy_headers(msg, payload)
+        helper.copy_headers(msg, payload)
         return payload
 
     def encrypt_email(self, msg, recipients=None):
@@ -82,9 +56,9 @@ class GPG(gnupg.GPG):
         else:
             body = msg.get_payload()
         if recipients is None:
-            recipients = _infer_recipients(msg)
+            recipients = helper.infer_recipients(msg)
         payload = self._encrypt_payload(body, recipients=recipients)
-        _copy_headers(msg, payload)
+        helper.copy_headers(msg, payload)
         return payload
 
     def sign_and_encrypt_email(self,
@@ -97,13 +71,13 @@ class GPG(gnupg.GPG):
         The parameters are the same as with encrypt_email and sign_email.
         """
         if recipients is None:
-            recipients = _infer_recipients(msg)
+            recipients = helper.infer_recipients(msg)
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
                                      passphrase=passphrase)
         payload = self._encrypt_payload(payload,
                                         recipients=recipients)
-        _copy_headers(msg, payload)
+        helper.copy_headers(msg, payload)
         return payload
 
     def decrypt_email(self, msg):

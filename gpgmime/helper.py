@@ -107,3 +107,29 @@ def RFC3156_micalg_from_algo(hash_algo):
     else:
         raise GPGProblem(("Invalid hash_algo passed to hash_algo_name."),
                          code=GPGCode.INVALID_HASH)
+
+
+def copy_headers(src, dest):
+    """Add all headers from src to dest, except those already present.
+
+    Both src and dest should be instances of class:`email.message.Message`.
+    dest will be modified in place, adding all of the headers in src which
+    are not already present.
+    """
+    for key in src.keys():
+        if key not in dest:
+            dest[key] = src[key]
+
+
+def infer_recipients(msg):
+    """Infer the proper recipients based on msg's headers.
+
+    return a list of recipients including all addresses listed in the
+    To, Cc, and Bcc headers.
+    """
+    recipients = []
+    for hdr in 'To', 'Cc', 'Bcc':
+        for addr in msg[hdr].split(','):
+            addr = addr.strip()
+            recipients.append(addr)
+    return addr
