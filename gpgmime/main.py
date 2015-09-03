@@ -44,12 +44,19 @@ def _infer_recipients(msg):
 
 
 class GPG(gnupg.GPG):
+    """An extended :class:`gnupg.GPG` with support for PGP MIME.
+
+    None of the methods exposed by this class modify their arguments;
+    results are always modified *copies* of the original.
+    """
 
     def sign_email(self, msg, keyid=None, passphrase=None):
         """MIME-sign a message.
 
         keyid and passphrase are the same as the parameters for the
         superclass's sign method.
+
+        Return a signed copy of the message object.
         """
         payload = self._sign_payload(msg.get_payload(),
                                      keyid=keyid,
@@ -64,6 +71,8 @@ class GPG(gnupg.GPG):
             :class:`email.message.Message`).
         :param recipients: A list of recipients to encrypt to. If None or
             unspecified, infered from the To, Cc, and Bcc headers.
+
+        Return an encrypted copy of the message object.
         """
         if 'MIME-Version' in msg:
             body = Message()
