@@ -97,6 +97,42 @@ class GPG(gnupg.GPG):
         _copy_headers(msg, payload)
         return payload
 
+    def decrypt_email(self, msg):
+        """Decrypt the MIME-encrypted message.
+
+        :param msg: The message (a :class:`email.message.Message`) to decrypt
+
+        Returns a tuple, (mail, decrypted), where decrypted is a
+        :class:`gnupg.Crypt` indicating the success or failure of the
+        decryption, and (if succesful), mail is a
+        :class:`email.message.Message`, which is the same as msg but
+        with the body decrypted.
+        """
+        assert False, "Not yet implemented"
+
+    def verify_email(self, msg):
+        """Verify the MIME-signed message.
+
+        :param msg: The message (a :class:`email.message.Message`) to verify
+
+        Returns a :class:`gnupg.Verify` indicating the result of the
+        verification
+        """
+        assert False, "Not yet implemented"
+
+    def decrypt_and_verify_email(self, msg):
+        """Decrypt and verify the mime encrypted/signed message.
+
+        Note that this is not merely a shortcut for calling decrypt_email
+        followed by verify_email; RFC3156 permits signing and encrypting via a
+        single PGP packet (section 6.2).
+
+        The return value will be a tuple (mail, decrypted, verified), where (if
+        successful) mail is the decrypted mail, and decrypted and verified are
+        the same as in the return values for decrypt_email and verify_email.
+        """
+        assert False, "Not yet implemented"
+
     def _sign_payload(self, payload, keyid=None, passphrase=None):
         payload = helper.normalize_payload(payload)
         plaintext = helper.email_as_string(payload)

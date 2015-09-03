@@ -51,3 +51,17 @@ def test_sign_then_encrypt(gpg, msg):
                                            passphrase='secret'),
                             recipients='bob@example.org')
     logger.debug("two-step output: %r", msg.as_string())
+
+
+@pytest.mark.xfail()
+def test_encrypt_decrypt(gpg, msg):
+    msg = gpg.encrypt_email(msg, recipients='bob@example.org')
+    msg, decrypted = gpg.decrypt_email(msg)
+    assert decrypted
+
+
+@pytest.mark.xfail()
+def test_sign_verify(gpg, msg):
+    msg = gpg.sign_email(msg, keyid='alice@example.com', passphrase='secret')
+    msg, verified = gpg.verify_email(msg)
+    assert verified
