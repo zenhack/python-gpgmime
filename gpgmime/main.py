@@ -109,11 +109,13 @@ class GPG(gnupg.GPG):
         helper.copy_headers(msg, payload)
         return payload
 
-    def decrypt_email(self, msg):
+    def decrypt_email(self, msg, passphrase=None):
         """Decrypt the MIME-encrypted message.
 
         :param msg: The message (a :class:`email.message.Message`) to decrypt.
             msg MUST be a mime encrypted email.
+        :param passphrase: The passphrase for the secret key with which to
+            decrypt the message.
 
         Returns a tuple, (mail, decrypted), where decrypted is a
         :class:`gnupg.Crypt` indicating the success or failure of the
@@ -162,8 +164,13 @@ class GPG(gnupg.GPG):
         os.remove(filename)
         return verified
 
-    def decrypt_and_verify_email(self, msg):
+    def decrypt_and_verify_email(self, msg, passphrase=None):
         """Decrypt and verify the mime encrypted/signed message.
+
+        :param msg: The message (a :class:`email.message.Message`) to decrypt.
+            msg MUST be a mime encrypted email.
+        :param passphrase: The passphrase for the secret key with which to
+            decrypt the message.
 
         Note that this is not merely a shortcut for calling decrypt_email
         followed by verify_email; RFC3156 permits signing and encrypting via a
