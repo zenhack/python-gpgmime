@@ -1,5 +1,7 @@
 
 import logging
+import os
+import tempfile
 import gnupg
 from . import helper
 from .errors import GPGCode, GPGProblem
@@ -149,7 +151,16 @@ class GPG(gnupg.GPG):
         Returns a :class:`gnupg.Verify` indicating the result of the
         verification
         """
-        assert False, "Not yet implemented"
+        if not is_signed(msg):
+            raise TypeError('%r is not a mime-signed email.' % msg)
+
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        tmp.write(msg.get_payload(1).get_payload())
+        filename = tmp.name
+        tmp.close()
+        verified = self.verify_data(filename, msg.get_payload(0).get_payload())
+        os.remove(filename)
+        return verified
 
     def decrypt_and_verify_email(self, msg):
         """Decrypt and verify the mime encrypted/signed message.

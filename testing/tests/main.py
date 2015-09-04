@@ -70,13 +70,9 @@ def test_encrypt_decrypt(gpg, msg):
     assert msg.get_payload() == orig_body
 
 
-@pytest.mark.xfail()
+#@pytest.mark.xfail()
 def test_sign_verify(gpg, msg):
-    orig_text = msg.as_string()
-
     ret = gpg.sign_email(msg, keyid='alice@example.com', passphrase='secret')
     assert gpgmime.is_signed(ret)
-    ret, verified = gpg.verify_email(msg)
+    verified = gpg.verify_email(ret)
     assert verified
-
-    assert msg.as_string() == orig_text
