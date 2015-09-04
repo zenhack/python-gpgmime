@@ -1,13 +1,47 @@
 `python-gpgmime` is a library for manipulating PGP mime messages.
 
 It provides support for encrypting, decrypting, signing, and verifying
-PGP mime email messages. It's based on the corresponding functionality
-in [alot][1].
+PGP mime email messages (RFC 3156). It's partly on the corresponding
+functionality in [alot][1], but the interface is built on top of
+[python-gnupg][2]; It provides a subclass of that library's `GPG`, with
+some additional mime-related methods.
 
-`python-gpgmime` is licensed under the GPL, version 3 or later.
+This is in a very early stage of development; not everything works yet,
+and what does may still be rough around the edges.
 
-Note that this is in a very early stage of development; it doesn't even
-work, as it hasn't been fully adjusted after being pulled from the alot
-source tree.
+# LICENSE
+
+GPL, version 3 or later.
+
+# HACKING
+
+Get set up:
+
+    virtualenv .venv
+    source .venv/bin/activate
+    python setup.py develop
+    pip install -r test-requirements.txt
+
+Running the test suite:
+
+    py.test
+
+Notes on tests:
+
+* The folder `testing/gpghome` contains a keyring used by the test
+  suite, and there's a fixture defined in `testing/utils.py` that
+  sets up the library to use this keyring. Obviously, don't rely on
+  these keys for security; the private keys are published in a public
+  git repository! The passphrases for the secret keys are as follows:
+    * Alice: `secret`
+    * Bob has no passphrase on his key (tsk tsk).
+    * Mallory: `god`
+* Tests themselves go in `testing/tests`. Support code for tests goes
+  in other modules under `testing/`.
+* `python-gnupg` is missing support for a couple of the new status
+  messages introduced in gnupg2; these can cause erroneous test
+  failures. Some of these appear to be fixed in master, but still crop
+  up in 0.3.7 on my machine.
 
 [1]: https://github.com/pazz/alot
+[2]: https://pythonhosted.org/python-gnupg/
