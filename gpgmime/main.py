@@ -6,8 +6,10 @@ from .errors import GPGCode, GPGProblem
 
 import email.charset as charset
 charset.add_charset('utf-8', charset.QP, charset.QP, 'utf-8')
+import email
 from email.encoders import encode_7or8bit
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.message import Message
 
@@ -79,7 +81,7 @@ class GPG(gnupg.GPG):
             body['MIME-Version'] = msg['MIME-Version']
             body['Content-Type'] = msg['Content-Type']
         else:
-            body = msg.get_payload()
+            body = MIMEText(msg.get_payload())
         if recipients is None:
             recipients = helper.infer_recipients(msg)
         payload = self._encrypt_payload(body, recipients=recipients)
@@ -108,7 +110,8 @@ class GPG(gnupg.GPG):
     def decrypt_email(self, msg):
         """Decrypt the MIME-encrypted message.
 
-        :param msg: The message (a :class:`email.message.Message`) to decrypt
+        :param msg: The message (a :class:`email.message.Message`) to decrypt.
+            msg MUST be a mime encrypted email.
 
         Returns a tuple, (mail, decrypted), where decrypted is a
         :class:`gnupg.Crypt` indicating the success or failure of the
@@ -116,7 +119,27 @@ class GPG(gnupg.GPG):
         :class:`email.message.Message`, which is the same as msg but
         with the body decrypted.
         """
-        assert False, "Not yet implemented"
+        if not is_encrypted(msg):
+            raise TypeError('%r is not a mime-encrypted email.' % msg)
+
+        # Second mime part is the ciphertext:
+        ciphertext = msg.get_payload(1).get_payload()
+        plaintext = self.decrypt(ciphertext)
+        if plaintext:
+            payload = email.message_from_string(str(plaintext))
+            ret = helper.clone_message(msg)
+
+            # Copy the headers/body from decrypted payload to the main message:
+            for k in payload.keys():
+                if k in ret:
+                    ret.replace_header(k, payload[k])
+                else:
+                    ret[k] = payload[k]
+                ret.set_payload(payload.get_payload())
+
+            return ret, plaintext
+        else:
+            return None, plaintext
 
     def verify_email(self, msg):
         """Verify the MIME-signed message.
