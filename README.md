@@ -1,10 +1,10 @@
 `python-gpgmime` is a library for manipulating PGP mime messages.
 
 It provides support for encrypting, decrypting, signing, and verifying
-PGP mime email messages (RFC 3156). It's partly on the corresponding
-functionality in [alot][1], but the interface is built on top of
-[python-gnupg][2]; It provides a subclass of that library's `GPG`, with
-some additional mime-related methods.
+PGP mime email messages (RFC 3156). It's based partly on the
+corresponding functionality in [alot][1], but the interface is built on
+top of [python-gnupg][2]; It provides a subclass of that library's
+`GPG`, with some additional mime-related methods.
 
 This is in a very early stage of development; not everything works yet,
 and what does may still be rough around the edges.
