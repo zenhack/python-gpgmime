@@ -164,23 +164,27 @@ class GPG(gnupg.GPG):
         os.remove(filename)
         return verified
 
-    def decrypt_and_verify_email(self, msg, passphrase=None):
-        """Decrypt and verify the mime encrypted/signed message.
-
-        :param msg: The message (a :class:`email.message.Message`) to decrypt.
-            msg MUST be a mime encrypted email.
-        :param passphrase: The passphrase for the secret key with which to
-            decrypt the message.
-
-        Note that this is not merely a shortcut for calling decrypt_email
-        followed by verify_email; RFC3156 permits signing and encrypting via a
-        single PGP packet (section 6.2).
-
-        The return value will be a tuple (mail, decrypted, verified), where (if
-        successful) mail is the decrypted mail, and decrypted and verified are
-        the same as in the return values for decrypt_email and verify_email.
-        """
-        assert False, "Not yet implemented"
+##   The below hasn't actually been implemented yet, so we're leaving it out
+##   of the releases for the time being. The docstring is complete enough to
+##   leave it here in the source:
+#
+#    def decrypt_and_verify_email(self, msg, passphrase=None):
+#        """Decrypt and verify the mime encrypted/signed message.
+#
+#        :param msg: The message (a :class:`email.message.Message`) to decrypt.
+#            msg MUST be a mime encrypted email.
+#        :param passphrase: The passphrase for the secret key with which to
+#            decrypt the message.
+#
+#        Note that this is not merely a shortcut for calling decrypt_email
+#        followed by verify_email; RFC3156 permits signing and encrypting via a
+#        single PGP packet (section 6.2).
+#
+#        The return value will be a tuple (mail, decrypted, verified), where (if
+#        successful) mail is the decrypted mail, and decrypted and verified are
+#        the same as in the return values for decrypt_email and verify_email.
+#        """
+#        assert False, "Not yet implemented"
 
     def _sign_payload(self, payload, keyid=None, passphrase=None):
         payload = helper.normalize_payload(payload)
