@@ -1,0 +1,6 @@
+include COPYING README.md issues
+include test-requirements.txt
+include .gitignore
+include doc/*
+recursive-include testing *.py
+graft testing/gpghome
