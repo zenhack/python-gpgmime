@@ -124,7 +124,7 @@ class GPG(gnupg.GPG):
         with the body decrypted.
         """
         if not is_encrypted(msg):
-            raise TypeError('%r is not a mime-encrypted email.' % msg)
+            raise TypeError(_('%r is not a mime-encrypted email.') % msg)
 
         # Second mime part is the ciphertext:
         ciphertext = msg.get_payload(1).get_payload()
@@ -154,7 +154,7 @@ class GPG(gnupg.GPG):
         verification
         """
         if not is_signed(msg):
-            raise TypeError('%r is not a mime-signed email.' % msg)
+            raise TypeError(_('%r is not a mime-signed email.') % msg)
 
         tmp = tempfile.NamedTemporaryFile(delete=False)
         tmp.write(msg.get_payload(1).get_payload())
@@ -225,7 +225,7 @@ class GPG(gnupg.GPG):
     def _encrypt_payload(self, unencrypted_msg, recipients):
 
         plaintext = helper.email_as_string(unencrypted_msg)
-        logging.debug('encrypting plaintext: ' + plaintext)
+        logging.debug(_('encrypting plaintext %r') % plaintext)
 
         ciphertext = self.encrypt(plaintext, recipients)
         if not ciphertext:
