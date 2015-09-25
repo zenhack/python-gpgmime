@@ -1,4 +1,4 @@
-include COPYING README.md issues
+include COPYING README.md issues ChangeLog
 include test-requirements.txt
 include .gitignore
 include doc/*
