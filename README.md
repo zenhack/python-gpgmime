@@ -38,10 +38,6 @@ Notes on tests:
     * Mallory: `god`
 * Tests themselves go in `testing/tests`. Support code for tests goes
   in other modules under `testing/`.
-* `python-gnupg` is missing support for a couple of the new status
-  messages introduced in gnupg2; these can cause erroneous test
-  failures. Some of these appear to be fixed in master, but still crop
-  up in 0.3.7 on my machine.
 
 [1]: https://github.com/pazz/alot
 [2]: https://pythonhosted.org/python-gnupg/
