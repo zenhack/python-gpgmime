@@ -17,7 +17,7 @@
 .. toctree::
    :maxdepth: 2
 
-The ``gpgmime`` module It provides support for encrypting, decrypting, signing,
+The ``gpgmime`` module provides support for encrypting, decrypting, signing,
 and verifying PGP mime email messages (RFC 3156). The interface is built on top
 of ``python-gnupg``; It provides a subclass of that library's `GPG`, with some
 additional mime-related methods.

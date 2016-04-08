@@ -72,8 +72,8 @@ class GPG(gnupg.GPG):
 
         :param msg: The message to encrypt (an instance of
             :class:`email.message.Message`).
-        :param recipients: A list of recipients to encrypt to. If None or
-            unspecified, infered from the To, Cc, and Bcc headers.
+        :param recipients: A list of recipients to encrypt to. If ``None`` or
+            unspecified, this will be infered from the To, Cc, and Bcc headers.
 
         Return an encrypted copy of the message object.
         """
@@ -112,8 +112,8 @@ class GPG(gnupg.GPG):
     def decrypt_email(self, msg, passphrase=None):
         """Decrypt the MIME-encrypted message.
 
-        :param msg: The message (a :class:`email.message.Message`) to decrypt.
-            msg MUST be a mime encrypted email.
+        :param msg: The message (an :class:`email.message.Message`) to decrypt.
+            ``msg`` MUST be a mime encrypted email.
         :param passphrase: The passphrase for the secret key with which to
             decrypt the message.
 
